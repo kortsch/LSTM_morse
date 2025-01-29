@@ -18,7 +18,7 @@ class Config():
 
     def __init__(self, file_name): 
         with open(file_name) as f:
-            self.config = yaml.load(f.read())
+            self.config = yaml.full_load(f.read())
     
     def value(self, key):
         return reduce(lambda c, k: c[k], key.split('.'), self.config)
@@ -37,71 +37,105 @@ import matplotlib.pyplot as plt
 class Morse():
     """Generates morse audio files from text. Can add noise to desired SNR level. Add random padding """
     code = {
-             '!': '-.-.--',
-             '$': '...-..-',
-             "'": '.----.',
-             '(': '-.--.',
-             ')': '-.--.-',
-             ',': '--..--',
-             '-': '-....-',
-             '.': '.-.-.-',
-             '/': '-..-.',
-             '0': '-----',
-             '1': '.----',
-             '2': '..---',
-             '3': '...--',
-             '4': '....-',
-             '5': '.....',
-             '6': '-....',
-             '7': '--...',
-             '8': '---..',
-             '9': '----.',
-             ':': '---...',
-             ';': '-.-.-.',
-             '>': '.-.-.',     #<AR>
-             '<': '.-...',     # <AS>
-             '{': '....--',    #<HM>
-             '&': '..-.-',     #<INT>
-             '%': '...-.-',    #<SK>
-             '}': '...-.',     #<VE>
-             '=': '-...-',     #<BT>
-             '?': '..--..',
-             '@': '.--.-.',
-             'A': '.-',
-             'B': '-...',
-             'C': '-.-.',
-             'D': '-..',
-             'E': '.',
-             'F': '..-.',
-             'G': '--.',
-             'H': '....',
-             'I': '..',
-             'J': '.---',
-             'K': '-.-',
-             'L': '.-..',
-             'M': '--',
-             'N': '-.',
-             'O': '---',
-             'P': '.--.',
-             'Q': '--.-',
-             'R': '.-.',
-             'S': '...',
-             'T': '-',
-             'U': '..-',
-             'V': '...-',
-             'W': '.--',
-             'X': '-..-',
-             'Y': '-.--',
-             'Z': '--..',
-             '\\': '.-..-.',
-             '_': '..--.-',
-             '~': '.-.-',
-             ' ': '_',
-             '\n':'_'
-                     
+             # '!': '-.-.--',
+             # '$': '...-..-',
+             # "'": '.----.',
+             # '(': '-.--.',
+             # ')': '-.--.-',
+             # ',': '--..--',
+             # '-': '-....-',
+             # '.': '.-.-.-',
+             # '/': '-..-.',
+             # '0': '-----',
+             # '1': '.----',
+             # '2': '..---',
+             # '3': '...--',
+             # '4': '....-',
+             # '5': '.....',
+             # '6': '-....',
+             # '7': '--...',
+             # '8': '---..',
+             # '9': '----.',
+             # ':': '---...',
+             # ';': '-.-.-.',
+             # '>': '.-.-.',     #<AR>
+             # '<': '.-...',     # <AS>
+             # '{': '....--',    #<HM>
+             # '&': '..-.-',     #<INT>
+             # '%': '...-.-',    #<SK>
+             # '}': '...-.',     #<VE>
+             # '=': '-...-',     #<BT>
+             # '?': '..--..',
+             # '@': '.--.-.',
+             # 'A': '.-',
+             # 'B': '-...',
+             # 'C': '-.-.',
+             # 'D': '-..',
+             # 'E': '.',
+             # 'F': '..-.',
+             # 'G': '--.',
+             # 'H': '....',
+             # 'I': '..',
+             # 'J': '.---',
+             # 'K': '-.-',
+             # 'L': '.-..',
+             # 'M': '--',
+             # 'N': '-.',
+             # 'O': '---',
+             # 'P': '.--.',
+             # 'Q': '--.-',
+             # 'R': '.-.',
+             # 'S': '...',
+             # 'T': '-',
+             # 'U': '..-',
+             # 'V': '...-',
+             # 'W': '.--',
+             # 'X': '-..-',
+             # 'Y': '-.--',
+             # 'Z': '--..',
+             # '\\': '.-..-.',
+             # '_': '..--.-',
+             # '~': '.-.-',
+             # ' ': '_',
+             # '\n':'_'
+            'а': '.-',
+            'б': '-...',
+            'в': '.--',
+            'г': '--.',
+            'д': '-..',
+            'е': '.',
+            'ж': '...-',
+            'з': '--..',
+            'и': '..',
+            'й': '.---',
+            'к': '-.-',
+            'л': '.-..',
+            'м': '--',
+            'н': '-.',
+            'о': '---',
+            'п': '.--.',
+            'р': '.-.',
+            'с': '...',
+            'т': '-',
+            'у': '..-',
+            'ф': '..-.',
+            'х': '....',
+            'ц': '-.-.',
+            'ч': '---.',
+            'ш': '----',
+            'щ': '--.-',
+            'ъ': '.--.-.',
+            'ы': '-.--',
+            'ь': '-..-',
+            'э': '..-..',
+            'ю': '..--',
+            'я': '.-.-',
+            ' ': '_',
+            '\n': '_'
+
     }
     def __init__(self, text, file_name=None, SNR_dB=20, f_code=600, Fs=8000, code_speed=20, length_seconds=4, total_seconds=8, play_sound=True):
-        self.text = text.upper()              # store requested text to be converted in here 
+        self.text = text.lower()              # store requested text to be converted in here
         self.file_name = file_name            # file name to store generated WAV file 
         self.SNR_dB = SNR_dB                  # target SNR in dB 
         self.f_code = f_code                  # CW tone frequency
@@ -137,7 +171,7 @@ class Morse():
         return val
         
     def len_chr_in_dits(self, ch):
-        s = Morse.code[ch]
+        s = Morse.code.get(ch,"_")
         return self.len_dits(s)
     
     def len_str_in_dits(self, s):
@@ -231,7 +265,7 @@ class Morse():
                 yield mybuf[:-1], self.len_str_in_secs(mybuf[:-1])
                 mybuf = nextchar
             elif len_str_in_secs < 0.:
-                raise ValueException("ERROR: parse_string should never have negative length strings")
+                raise ValueError("ERROR: parse_string should never have negative length strings")
    
         yield mybuf[:], self.len_str_in_secs(mybuf[:])
 
@@ -264,6 +298,8 @@ def generate_dataset(config):
     words_in_sample = config.value('morse.words_in_sample')
     print("SNR_DB:{}".format(SNR_DB))
     error_counter = 0
+    print(code_speed)
+    #return 0
 
     try: 
         os.makedirs(directory)
@@ -272,7 +308,7 @@ def generate_dataset(config):
         
 
     wordcount = 0
-    with open('arrl2.txt') as corpus:
+    with open('bigtext.txt') as corpus:
         #words = corpus.read().split("\n")
         text = corpus.read()
         for speed in code_speed: # generate training material in all WPM speeds in the list
@@ -299,11 +335,11 @@ def generate_dataset(config):
 
 
 def main(argv):
-    if len(argv) < 2:
-        print("usage: python generate.py <model-config.yaml>")
-        exit(1)
-    print(argv)
-    configs = Config(argv[1])
+    # if len(argv) < 2:
+    #     print("usage: python generate.py <model-config.yaml>")
+    #     exit(1)
+    # print(argv)
+    configs = Config("my_model.yaml")
     generate_dataset(configs)
 
 if __name__ == "__main__":

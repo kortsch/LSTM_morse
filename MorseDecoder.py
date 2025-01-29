@@ -317,7 +317,7 @@ class Morse():
                 yield mybuf[:-1], self.len_str_in_secs(mybuf[:-1])
                 mybuf = nextchar
             elif len_str_in_secs < 0.:
-                raise ValueException("ERROR: parse_string should never have negative length strings")
+                raise ValueError("ERROR: parse_string should never have negative length strings")
    
         yield mybuf[:], self.len_str_in_secs(mybuf[:])
 

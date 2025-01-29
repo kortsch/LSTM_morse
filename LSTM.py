@@ -127,7 +127,7 @@ def encode_morse(cws):
             if chr == ' ' or chr =='\n':
                 s += '_'
                 continue
-            print "error: %s not in Codebook" % chr
+            print("error: %s not in Codebook", chr)
     return ''.join(s)
 
 def len_chr(ch):
@@ -193,7 +193,7 @@ def signal(cw_str,WPM,Tq,sigma,padded,verbose=False):
     for ch in cws:
         prct=100.0*float(i)/float(msec)
         if (i % 1000 ) == 0 and verbose: 
-            print "Done: " + "{:.6f}".format(prct)+ "%"
+            print("Done: " + "{:.6f}".format(prct))
         if ch == '.':
             dur = len(dit)
             P.sig[i:i+dur] = dit
@@ -287,7 +287,7 @@ def print_label(ys):
         else:
             s += list(Morsecode.keys())[c]
     return s
-print "number of classes (Morse characters):",num_classes
+print("number of classes (Morse characters):", num_classes)
 
 
 # In[152]:
@@ -300,13 +300,13 @@ f = open('strings.txt','r')
 txt = f.read()
 
 def histogram(L):
-    print "char | freq"
+    print("char | freq")
     d = {letter:L.count(letter) for letter in set(L)}
     a = sorted(d)
     for key in a:
-        print "   {} | {}".format(key, d[key])
+        print("   {} | {}".format(key, d[key]))
 
-print "Training text length:",len(txt), " and character histogram:\n"
+print("Training text length:",len(txt), " and character histogram:\n")
 histogram(txt)
 
 
@@ -332,21 +332,21 @@ a = pd.read_pickle('strings.pkl')
 
 xs = a[["sig"]].as_matrix()
 
-print "Length of training vector xs: ",len(xs)
+print("Length of training vector xs: ",len(xs))
 
 
 ys = np.asarray(one_hot_labels(txt)).astype(np.float32)
 xs = xs[:32*num_labels].astype(np.float32)
 xs = xs.reshape(num_labels,32)
-print "Reshaped training vectors:",xs.shape, ys.shape, len(txt),len(xs),"\n"
+print("Reshaped training vectors:",xs.shape, ys.shape, len(txt),len(xs),"\n")
 
 # plot 50 first Morse code lines (32 pix each ) and print 50 first one_hot encoded labels
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
-get_ipython().magic(u'matplotlib inline')
+#get_ipython().magic(u'matplotlib inline')
 im = xs[:50].reshape(50,32)
 plt.imshow(im,cmap = cm.Greys_r)
-print ''.join(print_label(ys[:50]))
+print(''.join(print_label(ys[:50])))
 
 
 # In[5]:
@@ -369,14 +369,14 @@ for example 'A' = [ 0.  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.  
   0.  0.  0.  0.  0.]
 '''
 import matplotlib.pyplot as plt
-get_ipython().magic(u'matplotlib inline')
+#get_ipython().magic(u'matplotlib inline')
 
 import tensorflow as tf
-from tensorflow.models.rnn import rnn, rnn_cell
+from tensorflow.python.ops import rnn, rnn_cell
 import numpy as np
 
 # Setup the model & parameters 
-print "Setting up the model"
+print("Setting up the model")
 # Parameters
 learning_rate = 0.001 
 training_iters = 24050 #was 100000
@@ -450,7 +450,7 @@ saver = tf.train.Saver()  # defaults to saving all variables - in this case w an
 # In[6]:
 
 import time
-print "Launching training session"
+print("Launching training session")
 # Launch the graph
 start = time.time()
 with tf.Session() as sess:
@@ -476,14 +476,14 @@ with tf.Session() as sess:
             ls = sess.run(cost, feed_dict={x: batch_xs, y: batch_ys,
                                              istate: np.zeros((batch_size, 2*n_hidden))})
             loss.append(ls)
-            print "Iter " + str(step*batch_size) + ", Minibatch Loss= " + "{:.6f}".format(ls) + ", Training Accuracy= " + "{:.5f}".format(ac)
+            print("Iter " + str(step*batch_size) + ", Minibatch Loss= " + "{:.6f}".format(ls) + ", Training Accuracy= " + "{:.5f}".format(ac))
         step += 1
-    print "Saving model checkpoint"
+    print("Saving model checkpoint")
     saver.save(sess, 'model.ckpt', global_step=step+1)
 
-    print "Optimization Finished!"
+    print("Optimization Finished!")
 stop = time.time()
-print "Training duration:","{:.1f} secs".format(stop-start)
+print("Training duration:","{:.1f} secs".format(stop-start))
 
 
 # In[7]:
@@ -510,7 +510,7 @@ plt.show()
 # In[8]:
 
 import time
-print "Launching prediction session"
+print("Launching prediction session")
 
 y_hat = tf.cast(tf.argmax(pred,1), tf.types.float32)
 
@@ -528,7 +528,7 @@ ys = np.zeros((bs,n_classes))
 #bs =1 
 #xs = np.array([1,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],dtype=float)
 batch_xs =xs.reshape((bs,32,1))
-print bs, ys.shape,xs.shape,batch_xs.shape
+print(bs, ys.shape,xs.shape,batch_xs.shape)
 
 # load the model and predict label based on test input
 predict = []
@@ -541,9 +541,9 @@ with tf.Session() as sess:
                                          istate: np.zeros((1, 2*n_hidden))})
         predict += (Morsecode.keys()[int(pr[0])])
     stop = time.time()
-    print "Prediction:",''.join(predict)
+    print("Prediction:",''.join(predict))
 
-print "Duration:","{:.1f} sec".format(stop-start), " and ", "{:.4f} per character".format((stop-start)/bs)
+print("Duration:","{:.1f} sec".format(stop-start), " and ", "{:.4f} per character".format((stop-start)/bs))
 
 
 # In[ ]:
@@ -555,7 +555,7 @@ ts=signal(ts_str,12,0,0.1,True,False)
 w = ts[["sig"]].as_matrix()
 t = ts[["t"]].as_matrix()
 dit = 1.200/WPM
-print dit*t[len(t)-1]
+print(dit*t[len(t)-1])
 Fs=8000.
 Fo= 600.
 s = sin(80*t*2*pi)*w
@@ -571,13 +571,13 @@ f = open('random.txt','r')
 txt = f.read()
 
 def histogram(L):
-    print "char | freq"
+    print("char | freq")
     d = {letter:L.count(letter) for letter in set(L)}
     a = sorted(d)
     for key in a:
-        print "   {} | {}".format(key, d[key])
+        print("   {} | {}".format(key, d[key]))
 
-print "Training text length:",len(txt), " and character histogram:\n"
+print("Training text length:",len(txt), " and character histogram:\n")
 histogram(txt)
 
 
@@ -607,7 +607,7 @@ def create_random_text(strs,slen,alpha):
         s += ' '
     return ''.join(s)
 st = create_random_text(10000,10,2)
-print st
+print(st)
 f = open('strings.txt','w')
 f.write(st)
 

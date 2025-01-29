@@ -5,7 +5,7 @@ class Config():
 
     def __init__(self, file_name): 
         with open(file_name) as f:
-            self.config = yaml.load(f.read())
+            self.config = yaml.full_load(f.read())
     
     def value(self, key):
         return reduce(lambda c, k: c[k], key.split('.'), self.config)
